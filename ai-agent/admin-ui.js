@@ -57,3 +57,7 @@ document.addEventListener("DOMContentLoaded", function () {
         }, 5000);
     });
 });
+window.refinePrompt = function (text) {
+    document.getElementById("ai-agent-prompt").value = text;
+    window.scrollTo({ top: 0, behavior: "smooth" });
+};
