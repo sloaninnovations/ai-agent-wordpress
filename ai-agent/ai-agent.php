@@ -12,11 +12,16 @@ add_action('admin_menu', function () {
 });
 
 // Load admin scripts/styles
-add_action('admin_enqueue_scripts', function ($hook) {
-    if ($hook !== 'toplevel_page_ai-agent') return;
+function ai_agent_load_scripts() {
     wp_enqueue_script('ai-agent-js', plugin_dir_url(__FILE__) . 'admin-ui.js', [], time(), true);
     wp_enqueue_style('ai-agent-css', plugin_dir_url(__FILE__) . 'admin-ui.css', [], time());
-});
+
+    // Localize WP AJAX URL for JS
+    wp_localize_script('ai-agent-js', 'ajaxurl', admin_url('admin-ajax.php'));
+}
+add_action('admin_enqueue_scripts', 'ai_agent_load_scripts');
+add_action('wp_enqueue_scripts', 'ai_agent_load_scripts');
+
 
 // Admin UI form
 function ai_agent_ui() {
