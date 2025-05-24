@@ -17,18 +17,31 @@ document.addEventListener("DOMContentLoaded", function () {
         const id = data.project_id;
         status.innerHTML = `<strong>Tracking Project ID:</strong> ${id}<br>Status: Generating...`;
 
-        const poll = setInterval(async () => {
-            const check = await fetch(`https://ai-agent-orchestrator.onrender.com/prompt/status/${id}`);
-            const json = await check.json();
+const poll = setInterval(async () => {
+    const check = await fetch(`https://ai-agent-orchestrator.onrender.com/prompt/status/${id}`);
+    const json = await check.json();
 
-            const gh = `https://github.com/sloaninnovations/ai-agent-orchestrator/tree/main/generated/${id}`;
-            status.innerHTML = `
-                <strong>Tracking Project ID:</strong> ${id}<br>
-                <a href="${gh}" target="_blank">🔗 View on GitHub</a><br>
-                <pre>${JSON.stringify(json, null, 2)}</pre>
-            `;
+    const gh = `https://github.com/sloaninnovations/ai-agent-orchestrator/tree/main/generated/${id}`;
+    const rawUrl = `https://raw.githubusercontent.com/sloaninnovations/ai-agent-orchestrator/main/generated/${id}`;
 
-            if (json.stage === "committed" || json.stage === "error") clearInterval(poll);
-        }, 5000);
+    let preview = "";
+    if (json.data && json.data["app.py"]) {
+        const code = await fetch(`${rawUrl}/app.py`).then(r => r.text());
+        preview = `<h3>app.py</h3><pre><code>${code}</code></pre>`;
+    } else if (json.data && json.data["main.py"]) {
+        const code = await fetch(`${rawUrl}/main.py`).then(r => r.text());
+        preview = `<h3>main.py</h3><pre><code>${code}</code></pre>`;
+    }
+
+    status.innerHTML = `
+        <strong>Tracking Project ID:</strong> ${id}<br>
+        <a href="${gh}" target="_blank">🔗 View on GitHub</a><br>
+        <pre>${JSON.stringify(json, null, 2)}</pre>
+        ${preview}
+    `;
+
+    if (json.stage === "committed" || json.stage === "error") clearInterval(poll);
+}, 5000);
+
     });
 });
