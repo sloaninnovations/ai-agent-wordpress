@@ -15,6 +15,17 @@ document.addEventListener("DOMContentLoaded", function () {
 
         const data = await res.json();
         const id = data.project_id;
+		// Save to WP prompt history
+		await fetch(ajaxurl, {
+		method: "POST",
+		headers: { "Content-Type": "application/x-www-form-urlencoded" },
+		body: new URLSearchParams({
+			action: "save_ai_prompt",
+			prompt: prompt.value,
+			project_id: id
+			})
+		});
+
         status.innerHTML = `<strong>Tracking Project ID:</strong> ${id}<br>Status: Generating...`;
 
         const poll = setInterval(async () => {

@@ -28,3 +28,33 @@ function ai_agent_ui() {
     </div>
     <?php
 }
+// v1.0 - Register Custom Post Type: ai_prompt
+add_action('init', function () {
+    register_post_type('ai_prompt', [
+        'label' => 'AI Prompts',
+        'public' => false,
+        'show_ui' => true,
+        'supports' => ['title'],
+        'menu_icon' => 'dashicons-lightbulb',
+    ]);
+});
+
+// v1.1 - Save prompt to history
+add_action('wp_ajax_save_ai_prompt', function () {
+    if (!current_user_can('manage_options')) wp_die();
+
+    $prompt = sanitize_text_field($_POST['prompt']);
+    $project_id = sanitize_text_field($_POST['project_id']);
+
+    $post_id = wp_insert_post([
+        'post_type' => 'ai_prompt',
+        'post_title' => wp_trim_words($prompt, 8),
+        'post_status' => 'publish',
+        'meta_input' => [
+            'full_prompt' => $prompt,
+            'project_id' => $project_id
+        ]
+    ]);
+
+    wp_send_json_success(['id' => $post_id]);
+});
