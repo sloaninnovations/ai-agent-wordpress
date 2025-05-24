@@ -73,6 +73,12 @@ add_action('add_meta_boxes', function () {
 function render_ai_prompt_meta_box($post) {
     $prompt = get_post_meta($post->ID, 'full_prompt', true);
     $project_id = get_post_meta($post->ID, 'project_id', true);
+
+    $gh = "https://github.com/sloaninnovations/ai-agent-orchestrator/tree/main/generated/{$project_id}";
+    $zip = "https://ai-agent-orchestrator.onrender.com/prompt/download/{$project_id}";
+
     echo "<p><strong>Project ID:</strong><br><code>{$project_id}</code></p>";
     echo "<p><strong>Full Prompt:</strong><br><textarea rows='6' style='width:100%' readonly>" . esc_textarea($prompt) . "</textarea></p>";
+    echo "<p><a href='{$gh}' class='button' target='_blank'>🔗 View on GitHub</a></p>";
+    echo "<p><a href='{$zip}' class='button' download>⬇️ Download ZIP</a></p>";
 }
