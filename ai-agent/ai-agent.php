@@ -12,8 +12,8 @@ add_action('admin_menu', function () {
 
 add_action('admin_enqueue_scripts', function ($hook) {
     if ($hook !== 'toplevel_page_ai-agent') return;
-    wp_enqueue_script('ai-agent-js', plugin_dir_url(__FILE__) . 'admin-ui.js', [], false, true);
-    wp_enqueue_style('ai-agent-css', plugin_dir_url(__FILE__) . 'admin-ui.css');
+	wp_enqueue_script('ai-agent-js', plugin_dir_url(__FILE__) . 'admin-ui.js', [], time(), true);
+    wp_enqueue_style('ai-agent-css', plugin_dir_url(__FILE__) . 'admin-ui.css', [], time());
 });
 
 function ai_agent_ui() {
