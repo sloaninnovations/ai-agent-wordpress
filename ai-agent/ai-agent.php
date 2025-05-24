@@ -58,3 +58,21 @@ add_action('wp_ajax_save_ai_prompt', function () {
 
     wp_send_json_success(['id' => $post_id]);
 });
+// v1.2 - Add meta box for full prompt and project ID
+add_action('add_meta_boxes', function () {
+    add_meta_box(
+        'ai_prompt_meta',
+        'Prompt Details',
+        'render_ai_prompt_meta_box',
+        'ai_prompt',
+        'normal',
+        'high'
+    );
+});
+
+function render_ai_prompt_meta_box($post) {
+    $prompt = get_post_meta($post->ID, 'full_prompt', true);
+    $project_id = get_post_meta($post->ID, 'project_id', true);
+    echo "<p><strong>Project ID:</strong><br><code>{$project_id}</code></p>";
+    echo "<p><strong>Full Prompt:</strong><br><textarea rows='6' style='width:100%' readonly>" . esc_textarea($prompt) . "</textarea></p>";
+}
