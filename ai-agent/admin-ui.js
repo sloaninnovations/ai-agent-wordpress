@@ -15,18 +15,19 @@ document.addEventListener("DOMContentLoaded", function () {
 
         const data = await res.json();
         const id = data.project_id;
-		const gh = `https://github.com/sloaninnovations/ai-agent-orchestrator/tree/main/generated/${id}`;
-		status.innerHTML = `
-			<strong>Tracking Project ID:</strong> ${id}<br>
-			<a href="${gh}" target="_blank">🔗 View on GitHub</a><br>
-			<pre>${JSON.stringify(json, null, 2)}</pre>
-		`;
-
+        status.innerHTML = `<strong>Tracking Project ID:</strong> ${id}<br>Status: Generating...`;
 
         const poll = setInterval(async () => {
             const check = await fetch(`https://ai-agent-orchestrator.onrender.com/prompt/status/${id}`);
             const json = await check.json();
-            status.innerHTML = `<strong>Tracking Project ID:</strong> ${id}<br><pre>${JSON.stringify(json, null, 2)}</pre>`;
+
+            const gh = `https://github.com/sloaninnovations/ai-agent-orchestrator/tree/main/generated/${id}`;
+            status.innerHTML = `
+                <strong>Tracking Project ID:</strong> ${id}<br>
+                <a href="${gh}" target="_blank">🔗 View on GitHub</a><br>
+                <pre>${JSON.stringify(json, null, 2)}</pre>
+            `;
+
             if (json.stage === "committed" || json.stage === "error") clearInterval(poll);
         }, 5000);
     });
